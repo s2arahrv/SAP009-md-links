@@ -36,10 +36,12 @@
     "url": "https://github.com/s2arahrv/SAP009-md-links/issues"
   },
   "homepage": "https://github.com/s2arahrv/SAP009-md-links#readme",
-  "devDependencies": {
+  "dependencies": {
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.4",
-    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-env": "^7.21.4"
+  },
+  "devDependencies": {
     "babel-jest": "^29.5.0",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
