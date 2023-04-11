@@ -11,3 +11,9 @@ fs.readdir(folder, (err, list) => {
   });
   console.log(paths);
 });
+
+
+
+module.exports = () => {
+  // ... mdLinks() { ... }
+}
