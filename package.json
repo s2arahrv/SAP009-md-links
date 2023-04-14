@@ -16,7 +16,7 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node ./index.js",
+    "start": "node ./src/index.js",
     "test": "jest ./test",
     "lint": "eslint"
   },
