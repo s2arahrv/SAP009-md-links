@@ -4,6 +4,6 @@ const path = require('path');
 const mdLinks = require('../src/index.js')
 const filePath = path.join('src', 'example.md');
 
-mdLinks(filePath)
+mdLinks(filePath) 
 
 console.log(chalk.blue('hiii'))

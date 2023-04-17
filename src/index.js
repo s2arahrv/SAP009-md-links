@@ -1,10 +1,9 @@
 const fs = require('fs');
-const http = require('http')
-const bobo = 'https://www.google.com/'
-const baba = 'https://www.linkedin.com/in/sarahrodriguesvieira/'
-const bubu = 'http://localhost:5173/'
+// const bobo = 'https://www.google.com/'
+// const baba = 'https://www.linkedin.com/in/sarahrodriguesvieira/'
+// const bubu = 'http://localhost:5173/'
 
-  function mdLinks(filePath) {
+  function getLinks(filePath) {
     return fs.promises.readFile(filePath, 'utf8')
     .then(data => {
     const regex = /(?=\[(!\[.+?\]\(.+?\)|.+?)]\((https:\/\/[^\)]+)\))/gi
@@ -18,30 +17,33 @@ const bubu = 'http://localhost:5173/'
     })
   };
 
-  function fetchLinks(href) {
+  function getStatus(href) {
     return fetch(href)
     .then(response => {
-      if (response.status === 200 || 201 || 202) {
-      const result = { status: response.status, ok: 'ok' }
+      if (response.ok) {
+      const result = { ok: 'ok', status: response.status }
       return result
       }
     })
     .catch(error => {
       const errortype = error.cause.code
-      const badResult = { status: errortype, ok: 'fail' } 
+      const badResult = { ok: 'fail', status: errortype } 
       return badResult
     })
-    }
-  fetchLinks(bubu)
+  }
 
-//   function mdLinks(path) {
-//     if (ext === '.md') {
-//     return getLinks(path)
-//     }
-//     // status.getStatus(link)
-//   }
-
-// mdLinks(filePath)
+  function mdLinks(filePath) {
+    return getLinks(filePath)
+    .then(links => {
+      links.forEach(link => {
+        getStatus(link.URL)
+        .then(result => {
+            const output = `${link.text} ${link.URL} ${link.file} ${result.ok} ${result.status}`
+            console.log(output)
+        })
+      });
+    })
+  }
 
 
 module.exports = mdLinks
