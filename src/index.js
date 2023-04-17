@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path')
 const http = require('http')
 const status = require('./status')
-
 const filePath = path.join('src', 'example.md');
+const ext = path.extname(filePath)
 
   function getLinks(filePath) {
     return fs.promises.readFile(filePath, 'utf8')
@@ -19,7 +19,9 @@ const filePath = path.join('src', 'example.md');
   }
 
   function mdLinks(path) {
-    getLinks(path)
+    if (ext === '.md') {
+    return getLinks(path)
+    }
     // status.getStatus(link)
   }
 
