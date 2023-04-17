@@ -1,39 +1,38 @@
 const fs = require('fs');
 const http = require('http')
+const bobo = 'https://www.google.com/'
+const baba = 'https://www.linkedin.com/in/sarahrodriguesvieira/'
+const bubu = 'http://localhost:5173/'
 
   function mdLinks(filePath) {
     return fs.promises.readFile(filePath, 'utf8')
     .then(data => {
     const regex = /(?=\[(!\[.+?\]\(.+?\)|.+?)]\((https:\/\/[^\)]+)\))/gi
-    const areLinks = [...data.matchAll(regex)].map(link => {
-
-      const linkInfo = { 
+    const links = [...data.matchAll(regex)].map((link) => ({ 
         text: link[1], 
         URL: link[2], 
         file: filePath
-      }
+      }))
       
-      console.log(linkInfo)
+      return links
     })
-  })
-  .catch(error => { throw error });
-  }
+  };
 
-  function getStatus(response, error) {
-    fetch(link) 
+  function fetchLinks(href) {
+    return fetch(href)
     .then(response => {
-      if (response.status === 200 || 201) {
-        console.log('link OK!')
-        console.log(response.status)
+      if (response.status === 200 || 201 || 202) {
+      const result = { status: response.status, ok: 'ok' }
+      return result
       }
     })
     .catch(error => {
-      if (response.status === 400 || 404) {
-        console.log('link bad :(')
-      }
+      const errortype = error.cause.code
+      const badResult = { status: errortype, ok: 'fail' } 
+      return badResult
     })
-  }
-getStatus(link)
+    }
+  fetchLinks(bubu)
 
 //   function mdLinks(path) {
 //     if (ext === '.md') {
