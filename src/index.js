@@ -19,31 +19,37 @@ const fs = require('fs');
 
   function getStatus(href) {
     return fetch(href)
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
       const result = { ok: 'ok', status: response.status }
       return result
       }
+      else if (!response.ok) {
+        const badResult = { ok: 'fail', status: response.status}
+        return badResult
+      }
     })
     .catch(error => {
-      const errortype = error.cause.code
-      const badResult = { ok: 'fail', status: errortype } 
-      return badResult
+      const errorType = { ok: 'fail', status: error.cause.code } 
+      return errorType
     })
   }
 
-  function mdLinks(filePath) {
+ function mdLinks(filePath) {
     return getLinks(filePath)
-    .then(links => {
-      links.forEach(link => {
-        getStatus(link.URL)
-        .then(result => {
-            const output = `${link.text} ${link.URL} ${link.file} ${result.ok} ${result.status}`
-            console.log(output)
-        })
-      });
-    })
-  }
+    }
+  // function mdLinks(filePath) {
+  //   return getLinks(filePath)
+  //   .then(links => {
+  //     links.forEach(link => {
+  //       getStatus(link.URL)
+  //       .then(result => {
+  //           const output = `${link.text} ${link.URL} ${result.ok} ${result.status} ${link.file}`
+  //           console.log(output)
+  //       })
+  //     });
+  //   })
+  // }
 
 
 module.exports = mdLinks
