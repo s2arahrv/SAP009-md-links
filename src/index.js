@@ -1,7 +1,8 @@
 const fs = require('fs');
-// const bobo = 'https://www.google.com/'
-// const baba = 'https://www.linkedin.com/in/sarahrodriguesvieira/'
-// const bubu = 'http://localhost:5173/'
+
+  function fileExists(route) {
+    fs.existsSync(route)
+  }
 
   function getLinks(filePath) {
     return fs.promises.readFile(filePath, 'utf8')
@@ -35,21 +36,10 @@ const fs = require('fs');
     })
   }
 
- function mdLinks(filePath) {
+
+  function mdLinks(filePath) {
     return getLinks(filePath)
-    }
-  // function mdLinks(filePath) {
-  //   return getLinks(filePath)
-  //   .then(links => {
-  //     links.forEach(link => {
-  //       getStatus(link.URL)
-  //       .then(result => {
-  //           const output = `${link.text} ${link.URL} ${result.ok} ${result.status} ${link.file}`
-  //           console.log(output)
-  //       })
-  //     });
-  //   })
-  // }
+      }
 
 
-module.exports = mdLinks
+module.exports = { mdLinks, getStatus }
