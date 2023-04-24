@@ -1,8 +1,16 @@
 {
   "env": {
-    "node": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 8
-  }
+    "node": true,
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+},
+"extends": ["@babel/core", "eslint:recommended"],
+"overrides": [
+],
+"parserOptions": {
+    "ecmaVersion": "latest"
+},
+"rules": {
+}
 }
