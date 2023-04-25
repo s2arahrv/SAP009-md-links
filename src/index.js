@@ -7,7 +7,7 @@ const fs = require('fs');
 function getLinks(filePath) {
   return fs.promises.readFile(filePath, 'utf8')
     .then((data) => {
-      const regex = /(?=\[(!\[.+?\]\(.+?\)|.+?)]\((https:\/\/[^\)]+)\))/gi;
+      const regex = /(?=\[(!\[.+?\]\(.+?\)|.+?)]\((https:\/\/[^)]+)\))/gi;
       const links = [...(data.matchAll(regex))];
       const arrayLinks = links.map((link) => ({
         text: link[1],
@@ -20,7 +20,7 @@ function getLinks(filePath) {
 
 function getStatus(href) {
   return fetch(href)
-    .then((response) {
+    .then((response) => {
       if (response.ok) {
         const result = { ok: 'ok', status: response.status };
         return result;
@@ -31,7 +31,7 @@ function getStatus(href) {
       }
     })
     .catch((error) => {
-      const errorType = { ok: 'fail', status: error.cause.code };
+      const errorType = { ok: 'fail', status: error.cause };
       return errorType;
     });
 }
@@ -51,7 +51,19 @@ function brokenStats(arrLinks) {
 
 const mdLinks = (path, options) => new Promise((res, rej) => {
   const allLinks = getLinks(path);
-  res(allLinks);
+  if (options.validate) {
+    allLinks.then((links) => {
+      links.forEach((link) => {
+        const linkObj = getStatus(link.href).then((result) => ({
+          ...link,
+          ...result,
+        }));
+        res(linkObj);
+      });
+    });
+  } else {
+    res(allLinks);
+  }
 });
 
 module.exports = {

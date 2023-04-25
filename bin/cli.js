@@ -25,18 +25,30 @@ if (options.length === 0) {
 } else if (validate) {
   mdLinks(filePath, { validate: true })
     .then((links) => {
-      links.forEach((link) => {
-        getStatus(link.href)
-          .then((result) => {
-            if (!stats) {
-              const output = chalk.green(`${result.ok} `)
-                               + chalk.green(`${result.status} `);
-              console.log(output);
-            }
-          });
-      });
+      if (!stats) {
+        const output = chalk.blue(`${links.href} `)
+        + chalk.red(`${links.text} `) + chalk.green(`${links.ok} `) + chalk.green(`${links.status} `) + chalk.yellow(`${links.file}`);
+        console.log(output);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
+//   mdLinks(filePath, { validate: true })
+//     .then((links) => {
+//       links.forEach((link) => {
+//         getStatus(link.href)
+//           .then((result) => {
+//             if (!stats) {
+//               const output = chalk.green(`${result.ok} `)
+//                                + chalk.green(`${result.status} `);
+//               console.log(output);
+//             }
+//           });
+//       });
+//     });
+// }
 
 if (stats) {
   mdLinks(filePath, { validate: false })
