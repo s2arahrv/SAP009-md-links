@@ -1,12 +1,11 @@
 #! /usr/bin/env node
 const chalk = require('chalk');
-const path = require('path');
 const {
-  mdLinks, getStats, getStatus,
+  mdLinks, getStats,
 } = require('../src/index');
 
-const filePath = path.join('src', 'example.md'); // process.argv[2]
-const options = process.argv.slice(2);
+const filePath = process.argv[2]; // process.argv[2]
+const options = process.argv.slice(3);
 
 const validate = options[0] === '--validate' || options[1] === '--validate';
 const stats = options[0] === '--stats' || options[1] === '--stats';
@@ -21,7 +20,10 @@ if (options.length === 0) {
         console.log(output);
       });
     })
-    .catch(console.error);
+    .catch((error) => {
+      const errorMessage = chalk.red(error);
+      console.log(errorMessage);
+    });
 } else if (validate) {
   mdLinks(filePath, { validate: true })
     .then((links) => {
@@ -32,7 +34,8 @@ if (options.length === 0) {
       }
     })
     .catch((error) => {
-      console.log(error);
+      const errorMessage = chalk.red(error);
+      console.log(errorMessage);
     });
 }
 //   mdLinks(filePath, { validate: true })

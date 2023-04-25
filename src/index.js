@@ -1,8 +1,17 @@
 const fs = require('fs');
+const path = require('path');
+const errorMessage = require('./error');
 
-// function fileExists(route) {
-//   fs.existsSync(route);
-// }
+const fileExists = (filePath) => fs.existsSync(filePath);
+
+const isMD = (filePath) => path.extname(filePath);
+
+function readFile(filePath) {
+  if (isMD(filePath) === '.md') {
+    return filePath;
+  }
+  return filePath;
+}
 
 function getLinks(filePath) {
   return fs.promises.readFile(filePath, 'utf8')
@@ -49,20 +58,25 @@ function brokenStats(arrLinks) {
   return stats;
 }
 
-const mdLinks = (path, options) => new Promise((res, rej) => {
-  const allLinks = getLinks(path);
-  if (options.validate) {
-    allLinks.then((links) => {
-      links.forEach((link) => {
-        const linkObj = getStatus(link.href).then((result) => ({
-          ...link,
-          ...result,
-        }));
-        res(linkObj);
+const mdLinks = (filePath, options) => new Promise((res, rej) => {
+  if (fileExists(filePath)) {
+    const getFile = readFile(filePath);
+    const allLinks = getLinks(getFile);
+    if (options.validate) {
+      allLinks.then((links) => {
+        links.forEach((link) => {
+          const linkObj = getStatus(link.href).then((result) => ({
+            ...link,
+            ...result,
+          }));
+          res(linkObj);
+        });
       });
-    });
-  } else {
-    res(allLinks);
+    } else {
+      res(allLinks);
+    }
+  } else if (!fileExists) {
+    rej(errorMessage);
   }
 });
 
