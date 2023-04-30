@@ -1,16 +1,18 @@
 #! /usr/bin/env node
 const chalk = require('chalk');
+const errorMessage = require('../src/error');
 const {
-  mdLinks, getStats,
+  mdLinks, getStats, validateStats,
 } = require('../src/index');
 
+const errorOutput = chalk.red(errorMessage);
 const filePath = process.argv[2]; // process.argv[2]
 const options = process.argv.slice(3);
 
 const validate = options[0] === '--validate' || options[1] === '--validate';
 const stats = options[0] === '--stats' || options[1] === '--stats';
 
-if (options.length === 0) {
+if (!options.length) {
   mdLinks(filePath, { validate: false })
     .then((links) => {
       links.forEach((link) => {
@@ -20,23 +22,39 @@ if (options.length === 0) {
         console.log(output);
       });
     })
-    .catch((error) => {
-      const errorMessage = chalk.red(error);
-      console.log(errorMessage);
+    .catch(() => {
+      console.log(errorOutput);
     });
 } else if (validate) {
   mdLinks(filePath, { validate: true })
     .then((links) => {
-      if (!stats) {
-        const output = chalk.blue(`${links.href} `)
-        + chalk.red(`${links.text} `) + chalk.green(`${links.ok} `) + chalk.green(`${links.status} `) + chalk.yellow(`${links.file}`);
-        console.log(output);
+      if (stats) {
+        const statsOutput = chalk.green(getStats(links));
+        const brokenOutput = chalk.red(validateStats(links));
+        console.log(statsOutput);
+        console.log(brokenOutput);
+      } else {
+        links.forEach((link) => {
+          const output = chalk.blue(`${link.href} `)
+        + chalk.red(`${link.text} `) + chalk.green(`${link.ok} `) + chalk.green(`${link.status} `) + chalk.yellow(`${link.file}`);
+          console.log(output);
+        });
       }
     })
-    .catch((error) => {
-      const errorMessage = chalk.red(error);
-      console.log(errorMessage);
+    .catch(() => {
+      console.log(errorOutput);
     });
+} else if (stats) {
+  mdLinks(filePath, { validate: false })
+    .then((links) => {
+      const statsOutput = chalk.green(getStats(links));
+      console.log(statsOutput);
+    })
+    .catch(() => {
+      console.log(errorOutput);
+    });
+} else {
+  console.log(errorOutput);
 }
 //   mdLinks(filePath, { validate: true })
 //     .then((links) => {
@@ -53,12 +71,14 @@ if (options.length === 0) {
 //     });
 // }
 
-if (stats) {
-  mdLinks(filePath, { validate: false })
-    .then((links) => {
-      console.log(getStats(links));
-    });
-}
+// if (stats) {
+//   if (validate) {
+//     mdLinks(filePath, { validate: false })
+//       .then((links) => {
+//         console.log(getStats(links));
+//       });
+//   }
+// }
 
 // mdLinks("./some/example.md")
 //   .then(links => {

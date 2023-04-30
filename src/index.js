@@ -28,7 +28,7 @@ function getLinks(filePath) {
 }
 
 function getStatus(href) {
-  return fetch(href)
+  const status = fetch(href)
     .then((response) => {
       if (response.ok) {
         const result = { ok: 'ok', status: response.status };
@@ -43,43 +43,47 @@ function getStatus(href) {
       const errorType = { ok: 'fail', status: error.cause };
       return errorType;
     });
+  return status;
+}
+
+function validate(linksArr) {
+  return linksArr.then((links) => {
+    const fullObj = links.map((link) => getStatus(link.href).then((valObj) => ({
+      ...link,
+      ...valObj,
+    })));
+    return Promise.all(fullObj);
+  });
 }
 
 function getStats(arrLinks) {
   const totalLinks = arrLinks.length;
-  const uniqueLinks = new Set(arrLinks.map((link) => link.href)).size;
+  const linkFilter = arrLinks.map((link) => link.href);
+  const uniqueLinks = new Set(linkFilter).size;
   const stats = `Total: ${totalLinks}\nUnique: ${uniqueLinks}`;
   return stats;
 }
 
-function brokenStats(arrLinks) {
-  const brokenLinks = arrLinks.filter(({ ok }) => ok === 'fail').length;
-  const stats = `Broken: ${brokenLinks}`;
-  return stats;
+function validateStats(arrLinks) {
+  const brokenFilter = arrLinks.filter((link) => link.ok === 'fail');
+  const brokenStats = `Broken: ${brokenFilter.length}`;
+  return brokenStats;
 }
 
-const mdLinks = (filePath, options) => new Promise((res, rej) => {
-  if (fileExists(filePath)) {
-    const getFile = readFile(filePath);
-    const allLinks = getLinks(getFile);
-    if (options.validate) {
-      allLinks.then((links) => {
-        links.forEach((link) => {
-          const linkObj = getStatus(link.href).then((result) => ({
-            ...link,
-            ...result,
-          }));
-          res(linkObj);
-        });
-      });
-    } else {
-      res(allLinks);
-    }
-  } else if (!fileExists) {
-    rej(errorMessage);
+const mdLinks = (filePath, options) => {
+  if (!fileExists(filePath) || !readFile(filePath)) {
+    return Promise.reject(new Error(errorMessage));
   }
-});
+  const allLinks = getLinks(filePath);
+  if (options.validate) {
+    return validate(allLinks);
+  }
+  if (options.stats) {
+    return getStats(allLinks);
+  }
+  return allLinks;
+};
 
 module.exports = {
-  mdLinks, getStatus, getStats, brokenStats,
+  mdLinks, getStatus, getStats, validateStats,
 };
