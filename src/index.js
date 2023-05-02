@@ -4,16 +4,39 @@ const errorMessage = require('./error');
 
 const fileExists = (filePath) => fs.existsSync(filePath);
 
-const isMD = (filePath) => path.extname(filePath);
+const isMD = (filePath) => path.extname(filePath) === '.md';
 
-function readFile(filePath) {
-  if (isMD(filePath) === '.md') {
-    return filePath;
+const isDir = (filePath) => fs.statSync(filePath).isDirectory();
+
+// const readingDir = (filePath) => fs.readdirSync(filePath);
+
+const toRelative = (filePath) => path.relative(process.cwd(), filePath);
+
+function checkPath(filePath) {
+  // const allMdFiles = [];
+  if (isMD(filePath) && toRelative(filePath) !== filePath) {
+    const relativePath = toRelative(filePath);
+    // console.log(`Current directory: ${process.cwd()}`);
+    console.log(relativePath);
+    // allMdFiles.push(filePath);
+    return relativePath;
+  }
+  if (isDir(filePath)) {
+    // readingDir(filePath).forEach((file) => {
+    // const getPath = `${filePath}/${file}`;
+    // if (isMD(getPath) === true) {
+    //   console.log(`${getPath} is md!`);
+    //   return allMdFiles.push(getPath);
+    // }
+    // return allMdFiles;
+    // });
   }
   return filePath;
 }
 
 function getLinks(filePath) {
+  // const arrayAllLinks = [];
+  // arrFiles.forEach((filePath) =>
   return fs.promises.readFile(filePath, 'utf8')
     .then((data) => {
       const regex = /(?=\[(!\[.+?\]\(.+?\)|.+?)]\((https:\/\/[^)]+)\))/gi;
@@ -23,8 +46,10 @@ function getLinks(filePath) {
         href: link[2],
         file: filePath,
       }));
+      // return arrayAllLinks.push(arrayLinks);
       return arrayLinks;
     });
+  // return arrayAllLinks;
 }
 
 function getStatus(href) {
@@ -38,6 +63,7 @@ function getStatus(href) {
         const badResult = { ok: 'fail', status: response.status };
         return badResult;
       }
+      return status;
     })
     .catch((error) => {
       const errorType = { ok: 'fail', status: error.cause };
@@ -71,10 +97,11 @@ function validateStats(arrLinks) {
 }
 
 const mdLinks = (filePath, options) => {
-  if (!fileExists(filePath) || !readFile(filePath)) {
+  if (!fileExists(filePath)) {
     return Promise.reject(new Error(errorMessage));
   }
-  const allLinks = getLinks(filePath);
+  const thePath = checkPath(filePath);
+  const allLinks = getLinks(thePath);
   if (options.validate) {
     return validate(allLinks);
   }

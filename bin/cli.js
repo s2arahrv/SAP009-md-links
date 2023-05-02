@@ -36,7 +36,7 @@ if (!options.length) {
       } else {
         links.forEach((link) => {
           const output = chalk.blue(`${link.href} `)
-        + chalk.red(`${link.text} `) + chalk.green(`${link.ok} `) + chalk.green(`${link.status} `) + chalk.yellow(`${link.file}`);
+        + chalk.red(`${link.text} `) + chalk.blue(`${link.ok} `) + chalk.blue(`${link.status} `) + chalk.yellow(`${link.file}`);
           console.log(output);
         });
       }
