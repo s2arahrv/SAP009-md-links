@@ -17,8 +17,8 @@ if (!options.length) {
     .then((links) => {
       links.forEach((link) => {
         const output = chalk.blue(`${link.href} `)
-                         + chalk.red(`${link.text} `)
-                         + chalk.yellow(`${link.file}`);
+                         + chalk.magenta(`${link.text}`)
+                         + chalk.yellow(` ${link.file}`);
         console.log(output);
       });
     })
@@ -29,15 +29,27 @@ if (!options.length) {
   mdLinks(filePath, { validate: true })
     .then((links) => {
       if (stats) {
-        const statsOutput = chalk.green(getStats(links));
-        const brokenOutput = chalk.red(validateStats(links));
-        console.log(statsOutput);
-        console.log(brokenOutput);
+        const statsOutput = getStats(links);
+        const brokenOutput = validateStats(links);
+        console.log(chalk.bold(statsOutput));
+        if (brokenOutput !== `Broken: 0`) {
+        console.log(chalk.red((brokenOutput)));
+        } else {
+          console.log(chalk.green(brokenOutput))
+        }
       } else {
         links.forEach((link) => {
-          const output = chalk.blue(`${link.href} `)
-        + chalk.red(`${link.text} `) + chalk.blue(`${link.ok} `) + chalk.blue(`${link.status} `) + chalk.yellow(`${link.file}`);
+          if (link.ok === 'FAIL') {
+            const output = chalk.italic(`${link.href} `)
+        + chalk.bold(`${link.text} `) + chalk.bgRed(`${link.ok} `) + chalk.bgRed(`${link.status}`) + chalk.yellow(` ${link.file}`);
+
+          console.log(output)
+          }
+          else if (link.ok === 'OK') {
+          const output = chalk.italic(`${link.href} `)
+        + chalk.bold(`${link.text} `) + chalk.bgGreenBright(`${link.ok}`) + chalk.bgGreenBright(` ${link.status}`) + chalk.yellow(` ${link.file}`);
           console.log(output);
+          }
         });
       }
     })
@@ -45,7 +57,7 @@ if (!options.length) {
       console.log(errorOutput);
     });
 } else if (stats) {
-  mdLinks(filePath, { validate: false })
+  mdLinks(filePath, { stats: true, validate: false })
     .then((links) => {
       const statsOutput = chalk.green(getStats(links));
       console.log(statsOutput);
