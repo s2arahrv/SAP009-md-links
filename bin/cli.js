@@ -5,7 +5,7 @@ const {
   mdLinks, getStats, validateStats,
 } = require('../src/index');
 
-const errorOutput = chalk.red(errorMessage);
+const errorOutput = chalk.hex('#FFF8E7')(errorMessage);
 const filePath = process.argv[2]; // process.argv[2]
 const options = process.argv.slice(3);
 
@@ -31,7 +31,7 @@ if (!options.length) {
       if (stats) {
         const statsOutput = getStats(links);
         const brokenOutput = validateStats(links);
-        console.log(chalk.hex('#FFF8E7')(`(∩^o^)⊃━☆ .°\n`)+ chalk.bold(statsOutput));
+        console.log(chalk.hex('#FFF8E7')(`ʕ •ᴥ•ʔ⊃━☆ .°\n`)+ chalk.bold(statsOutput));
         if (brokenOutput !== `Broken: 0`) {
         console.log(chalk.bold(chalk.red((brokenOutput))));
         } else {
@@ -60,13 +60,13 @@ if (!options.length) {
   mdLinks(filePath, { validate: false })
     .then((links) => {
       const statsOutput = getStats(links);
-      console.log(chalk.hex('#FFF8E7')(`(∩^o^)⊃━☆ .°\n`)+ chalk.bold(statsOutput));
+      console.log(chalk.hex('#FFF8E7')(`ʕ •ᴥ•ʔ⊃━☆ .°\n`)+ chalk.bold(statsOutput));
     })
     .catch(() => {
       console.log(errorOutput);
     });
 } else {
-  console.log(errorOutput);
+  console.log(errorMessage)
 }
 //   mdLinks(filePath, { validate: true })
 //     .then((links) => {
