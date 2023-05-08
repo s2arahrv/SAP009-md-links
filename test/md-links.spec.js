@@ -18,21 +18,21 @@ const arrayLinks = [{
   text: 'google',
   href: 'https://www.google.com/',
   file: 'test\\example.md',
-  ok: 'ok',
+  ok: 'OK',
   status: 200,
 },
 {
   text: 'invalidlink',
   href: 'https://reqres.in/api/users/34',
   file: 'test\\example.md',
-  ok: 'fail',
+  ok: 'FAIL',
   status: 404,
 },
 {
   text: 'not found',
   href: 'http://www.dundermifflin.com.br/',
   file: 'test\\example.md',
-  ok: 'fail',
+  ok: 'FAIL',
   status: 'ENOTFOUND',
  }
 ];
@@ -110,11 +110,11 @@ describe('mdLinks', () => {
     })
   })
 
-  it('should return stats with total and unique links if stats is true', () => {
-    return mdLinks(filePath, { stats: true, validate: false }).then((result) => {
-      expect(result).toEqual(`Total: 3\nUnique: 3`)
-    })
-})
+  // it('should return stats with total and unique links if stats is true', () => {
+  //   return mdLinks(filePath, { stats: true }).then((result) => {
+  //     expect(result).toEqual(`Total: 3\nUnique: 3`)
+  //   })
+// })
 
   it('should return an object of validated links if validate is true', () => {
     return mdLinks(filePath, { validate: true }).then((result) => {
@@ -135,21 +135,21 @@ describe('validate', () => {
         text: 'google',
         href: 'https://www.google.com/',
         file: 'test/example.md',
-        ok: 'ok',
+        ok: 'OK',
         status: 200,
       },
       {
         text: 'invalidlink',
         href: 'https://reqres.in/api/users/34',
         file: 'test/example.md',
-        ok: 'fail',
+        ok: 'FAIL',
         status: 404,
       },
       {
         text: 'not found',
         href: 'http://www.dundermifflin.com.br/',
         file: 'test/example.md',
-        ok: 'fail',
+        ok: 'FAIL',
         status: 'ENOTFOUND',
        }
       ])

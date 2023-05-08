@@ -96,9 +96,6 @@ const mdLinks = (filePath, options) => {
   if (options.validate) {
     return validate(allLinks);
   }
-  if (options.stats) {
-    return getStats(allLinks);
-  }
   return allLinks;
 };
 

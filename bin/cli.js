@@ -13,12 +13,12 @@ const validate = options[0] === '--validate' || options[1] === '--validate';
 const stats = options[0] === '--stats' || options[1] === '--stats';
 
 if (!options.length) {
-  mdLinks(filePath, { validate: false })
+  mdLinks(filePath, { stats: false, validate: false })
     .then((links) => {
       links.forEach((link) => {
-        const output = chalk.blue(`${link.href} `)
-                         + chalk.magenta(`${link.text}`)
-                         + chalk.yellow(` ${link.file}`);
+        const output = chalk.hex('#f19db4')(`❤ `) + ` ${link.href} `
+                         + chalk.bold(chalk.hex('#FFF8E7')((`${link.text}`))
+                         + chalk.hex('#f19db4')(` ${link.file}`));
         console.log(output);
       });
     })
@@ -31,23 +31,23 @@ if (!options.length) {
       if (stats) {
         const statsOutput = getStats(links);
         const brokenOutput = validateStats(links);
-        console.log(chalk.bold(statsOutput));
+        console.log(chalk.hex('#FFF8E7')(`(∩^o^)⊃━☆ .°\n`)+ chalk.bold(statsOutput));
         if (brokenOutput !== `Broken: 0`) {
-        console.log(chalk.red((brokenOutput)));
+        console.log(chalk.bold(chalk.red((brokenOutput))));
         } else {
-          console.log(chalk.green(brokenOutput))
+          console.log(chalk.bold(chalk.green(brokenOutput)))
         }
       } else {
         links.forEach((link) => {
           if (link.ok === 'FAIL') {
-            const output = chalk.italic(`${link.href} `)
-        + chalk.bold(`${link.text} `) + chalk.bgRed(`${link.ok} `) + chalk.bgRed(`${link.status}`) + chalk.yellow(` ${link.file}`);
+            const output = chalk.hex('#f19db4')(`❤ `) + ` ${link.href} `
+        + chalk.bold(chalk.hex('#FFF8E7')((`${link.text} `))) + chalk.bgRed(`${link.ok} ` + `${link.status}`) + chalk.hex('#f19db4')(` ${link.file}`);
 
           console.log(output)
           }
           else if (link.ok === 'OK') {
-          const output = chalk.italic(`${link.href} `)
-        + chalk.bold(`${link.text} `) + chalk.bgGreenBright(`${link.ok}`) + chalk.bgGreenBright(` ${link.status}`) + chalk.yellow(` ${link.file}`);
+          const output = chalk.hex('#f19db4')(`❤ `) + ` ${link.href} `
+        + chalk.bold(chalk.hex('#FFF8E7')((`${link.text} `))) + chalk.bgGreenBright(`${link.ok} ` + `${link.status}`) + chalk.hex('#f19db4')(` ${link.file}`);
           console.log(output);
           }
         });
@@ -57,10 +57,10 @@ if (!options.length) {
       console.log(errorOutput);
     });
 } else if (stats) {
-  mdLinks(filePath, { stats: true, validate: false })
+  mdLinks(filePath, { validate: false })
     .then((links) => {
-      const statsOutput = chalk.green(getStats(links));
-      console.log(statsOutput);
+      const statsOutput = getStats(links);
+      console.log(chalk.hex('#FFF8E7')(`(∩^o^)⊃━☆ .°\n`)+ chalk.bold(statsOutput));
     })
     .catch(() => {
       console.log(errorOutput);
