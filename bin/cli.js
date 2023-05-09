@@ -6,7 +6,7 @@ const {
 } = require('../src/index');
 
 const errorOutput = chalk.hex('#FFF8E7')(errorMessage);
-const filePath = process.argv[2]; // process.argv[2]
+const filePath = process.argv[2];
 const options = process.argv.slice(3);
 
 const validate = options[0] === '--validate' || options[1] === '--validate';
@@ -68,30 +68,6 @@ if (!options.length) {
 } else {
   console.log(errorMessage)
 }
-//   mdLinks(filePath, { validate: true })
-//     .then((links) => {
-//       links.forEach((link) => {
-//         getStatus(link.href)
-//           .then((result) => {
-//             if (!stats) {
-//               const output = chalk.green(`${result.ok} `)
-//                                + chalk.green(`${result.status} `);
-//               console.log(output);
-//             }
-//           });
-//       });
-//     });
-// }
-
-// if (stats) {
-//   if (validate) {
-//     mdLinks(filePath, { validate: false })
-//       .then((links) => {
-//         console.log(getStats(links));
-//       });
-//   }
-// }
-
 // mdLinks("./some/example.md")
 //   .then(links => {
 //     // => [{ href, text, file }, ...]

@@ -6,19 +6,11 @@ const fileExists = (filePath) => fs.existsSync(filePath);
 
 const isMD = (filePath) => path.extname(filePath) === '.md';
 
-// const isDir = (filePath) => fs.statSync(filePath).isDirectory();
-
-// const readingDir = (filePath) => fs.readdirSync(filePath);
-
 const toRelative = (filePath) => path.relative(process.cwd(), filePath);
 
 function checkPath(filePath) {
-  // const allMdFiles = [];
   if (isMD(filePath)) {
     const relativePath = toRelative(filePath);
-    // console.log(`Current directory: ${process.cwd()}`);
-    // console.log(relativePath);
-    // allMdFiles.push(filePath);
     return relativePath;
   }
   else {
@@ -27,8 +19,6 @@ function checkPath(filePath) {
 }
 
 function getLinks(filePath) {
-  // const arrayAllLinks = [];
-  // arrFiles.forEach((filePath) =>
   return fs.promises.readFile(filePath, 'utf8')
     .then((data) => {
       const regex =  /\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)/gm;
@@ -38,10 +28,8 @@ function getLinks(filePath) {
         href: link[2],
         file: filePath,
       }));
-      // return arrayAllLinks.push(arrayLinks);
       return arrayLinks;
     });
-  // return arrayAllLinks;
 }
 
 function getStatus(href) {
@@ -51,7 +39,7 @@ function getStatus(href) {
         const result = { ok: 'OK', status: response.status };
         return result;
       }
-      if (!response.ok) {
+      else {
         const badResult = { ok: 'FAIL', status: response.status };
         return badResult;
       }
@@ -100,5 +88,5 @@ const mdLinks = (filePath, options) => {
 };
 
 module.exports = {
-  mdLinks, checkPath, fileExists, getLinks, validate, getStatus, getStats, validateStats,
+  mdLinks, checkPath, fileExists, getLinks, validate, getStats, validateStats,
 };

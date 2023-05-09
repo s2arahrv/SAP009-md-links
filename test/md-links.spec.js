@@ -1,15 +1,7 @@
 // const mdLinks = require('../');
-const { mdLinks, fileExists, checkPath, getLinks, validate, getStats, validateStats, getStatus } = require('../src/index');
+const { mdLinks, fileExists, checkPath, getLinks, validate, getStats, validateStats } = require('../src/index');
 const fs = require('fs');
 const errorMessage = require('../src/error');
-
-// jest.mock('fs', () => ({
-//   promises: {
-//     readFile: jest.fn().mockResolvedValue(fileContent),
-//   }
-// }));
-
-// jest.mock('fs/promises')
 
 const filePath = 'test/example.md'
 const relativeFilePath = 'test\\example.md'
@@ -75,6 +67,14 @@ describe('getLinks', () => {
   it('it a function', () => {
     expect(typeof getLinks).toBe('function');
 
+    const spyRead = jest.spyOn(fs.promises, 'readFile');
+    spyRead.mockResolvedValue(`## Test file
+
+    Links:
+    - [google](https://www.google.com/)
+    - [invalidlink](https://reqres.in/api/users/34)
+    - [not found](http://www.dundermifflin.com.br/)`);
+
     return getLinks(filePath).then((result) => {
       expect(result).toEqual([{
         text: 'google',
@@ -91,16 +91,29 @@ describe('getLinks', () => {
         href: 'http://www.dundermifflin.com.br/',
         file: 'test/example.md'
        }])
+      expect(spyRead).toHaveBeenCalledTimes(1);
     })
 });
 })
 
 describe('mdLinks', () => {
+  beforeEach(() => {
+    jest.spyOn(fs, 'existsSync').mockImplementation(() => true)
+    const spyRead = jest.spyOn(fs.promises, 'readFile');
+    spyRead.mockResolvedValue(`## Test file
+
+    Links:
+    - [google](https://www.google.com/)
+    - [invalidlink](https://reqres.in/api/users/34)
+    - [not found](http://www.dundermifflin.com.br/)`);
+  })
+
   it('it is a true path', () => {
     expect(fileExists(filePath)).toBe(true)
   })
 
-  it('should reject the promise if link does not exist', () => {
+  it('should reject the promise if file does not exist', () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation(() => false)
     expect(mdLinks('bobo.md', {})).rejects.toEqual(errorMessage)
   })
 
@@ -109,12 +122,6 @@ describe('mdLinks', () => {
       expect(result).toEqual(mdArray)
     })
   })
-
-  // it('should return stats with total and unique links if stats is true', () => {
-  //   return mdLinks(filePath, { stats: true }).then((result) => {
-  //     expect(result).toEqual(`Total: 3\nUnique: 3`)
-  //   })
-// })
 
   it('should return an object of validated links if validate is true', () => {
     return mdLinks(filePath, { validate: true }).then((result) => {
@@ -130,6 +137,7 @@ describe('validate', () => {
 
   it('should return an object with link properties, status and ok', () => {
     const links = getLinks(filePath)
+
     return validate(links).then((result) => {
       expect(result).toEqual([{
         text: 'google',
