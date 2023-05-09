@@ -50,3 +50,9 @@ Para o planejamento do projeto foi utilizado o Github Projects, com a criação 
 |---------|------------------------------------------------------------------------|
 
 ![comando-validate-stats](./imgs/md-links-broken.png)
+
+---
+
+Caso digitado um comando inválido, md-links retorna uma mensagem de ajuda com todos os comandos válidos:
+
+![comando-ajuda](./imgs/md-links-help.png)
