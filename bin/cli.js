@@ -5,20 +5,20 @@ const {
   mdLinks, getStats, validateStats,
 } = require('../src/index');
 
-const errorOutput = chalk.red(errorMessage);
-const filePath = process.argv[2]; // process.argv[2]
+const errorOutput = chalk.hex('#FFF8E7')(errorMessage);
+const filePath = process.argv[2];
 const options = process.argv.slice(3);
 
 const validate = options[0] === '--validate' || options[1] === '--validate';
 const stats = options[0] === '--stats' || options[1] === '--stats';
 
 if (!options.length) {
-  mdLinks(filePath, { validate: false })
+  mdLinks(filePath, { stats: false, validate: false })
     .then((links) => {
       links.forEach((link) => {
-        const output = chalk.blue(`${link.href} `)
-                         + chalk.red(`${link.text} `)
-                         + chalk.yellow(`${link.file}`);
+        const output = chalk.hex('#f19db4')(`❤ `) + ` ${link.href} `
+                         + chalk.bold(chalk.hex('#FFF8E7')((`${link.text}`))
+                         + chalk.hex('#f19db4')(` ${link.file}`));
         console.log(output);
       });
     })
@@ -29,15 +29,27 @@ if (!options.length) {
   mdLinks(filePath, { validate: true })
     .then((links) => {
       if (stats) {
-        const statsOutput = chalk.green(getStats(links));
-        const brokenOutput = chalk.red(validateStats(links));
-        console.log(statsOutput);
-        console.log(brokenOutput);
+        const statsOutput = getStats(links);
+        const brokenOutput = validateStats(links);
+        console.log(chalk.hex('#FFF8E7')(`ʕ •ᴥ•ʔ⊃━☆ .°\n`)+ chalk.bold(statsOutput));
+        if (brokenOutput !== `Broken: 0`) {
+        console.log(chalk.bold(chalk.red((brokenOutput))));
+        } else {
+          console.log(chalk.bold(chalk.green(brokenOutput)))
+        }
       } else {
         links.forEach((link) => {
-          const output = chalk.blue(`${link.href} `)
-        + chalk.red(`${link.text} `) + chalk.blue(`${link.ok} `) + chalk.blue(`${link.status} `) + chalk.yellow(`${link.file}`);
+          if (link.ok === 'FAIL') {
+            const output = chalk.hex('#f19db4')(`❤ `) + ` ${link.href} `
+        + chalk.bold(chalk.hex('#FFF8E7')((`${link.text} `))) + chalk.bgRed(`${link.ok} ` + `${link.status}`) + chalk.hex('#f19db4')(` ${link.file}`);
+
+          console.log(output)
+          }
+          else if (link.ok === 'OK') {
+          const output = chalk.hex('#f19db4')(`❤ `) + ` ${link.href} `
+        + chalk.bold(chalk.hex('#FFF8E7')((`${link.text} `))) + chalk.bgGreenBright(`${link.ok} ` + `${link.status}`) + chalk.hex('#f19db4')(` ${link.file}`);
           console.log(output);
+          }
         });
       }
     })
@@ -47,39 +59,15 @@ if (!options.length) {
 } else if (stats) {
   mdLinks(filePath, { validate: false })
     .then((links) => {
-      const statsOutput = chalk.green(getStats(links));
-      console.log(statsOutput);
+      const statsOutput = getStats(links);
+      console.log(chalk.hex('#FFF8E7')(`ʕ •ᴥ•ʔ⊃━☆ .°\n`)+ chalk.bold(statsOutput));
     })
     .catch(() => {
       console.log(errorOutput);
     });
 } else {
-  console.log(errorOutput);
+  console.log(errorMessage)
 }
-//   mdLinks(filePath, { validate: true })
-//     .then((links) => {
-//       links.forEach((link) => {
-//         getStatus(link.href)
-//           .then((result) => {
-//             if (!stats) {
-//               const output = chalk.green(`${result.ok} `)
-//                                + chalk.green(`${result.status} `);
-//               console.log(output);
-//             }
-//           });
-//       });
-//     });
-// }
-
-// if (stats) {
-//   if (validate) {
-//     mdLinks(filePath, { validate: false })
-//       .then((links) => {
-//         console.log(getStats(links));
-//       });
-//   }
-// }
-
 // mdLinks("./some/example.md")
 //   .then(links => {
 //     // => [{ href, text, file }, ...]
