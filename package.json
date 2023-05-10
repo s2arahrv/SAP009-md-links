@@ -1,6 +1,6 @@
 {
   "name": "@s2arahrv/md-links",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "MdLinks - Node project",
   "author": "Sarah Rodrigues Vieira <sarahrdvieira@gmail.com> (https://github.com/s2arahrv)",
   "engines": {
@@ -53,6 +53,6 @@
     "jest": "^29.5.0"
   },
   "publishConfig": {
-    "@s2arahrv:registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/"
   }
 }

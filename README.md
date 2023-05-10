@@ -20,7 +20,15 @@ Para o planejamento do projeto foi utilizado o Github Projects, com a criação 
 
 ## 3. Instalação
 
-| Comando | npm i -g @s2arahrv/md-links |
+Adicione um arquivo .npmrc ao seu projeto e informe o registry:
+
+```
+@s2arahrv:registry=https://npm.pkg.github.com
+```
+
+Rode o comando no terminal do seu projeto:
+
+| Comando | npm i @s2arahrv/md-links |
 |---------|-----------------------------|
 
 ## 4. Utilização
