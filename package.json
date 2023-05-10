@@ -1,8 +1,8 @@
 {
   "name": "@s2arahrv/md-links",
   "version": "0.1.0",
-  "description": "MDlinks validator CLI",
-  "author": "Sarah R Vieira <sarahrdvieira@gmail.com> (https://github.com/s2arahrv)",
+  "description": "MdLinks - Node project",
+  "author": "Sarah Rodrigues Vieira <sarahrdvieira@gmail.com> (https://github.com/s2arahrv)",
   "engines": {
     "node": ">=16.x"
   },
